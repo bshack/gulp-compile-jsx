@@ -1,13 +1,44 @@
 {
-  "name": "gulp-jsx2html",
-  "version": "1.0.11",
-  "description": "",
+  "name": "gulp-compile-jsx",
+  "homepage": "https://github.com/bshack/gulp-compile-jsx",
+  "version": "1.0.12",
+  "description": "Compile JSX templates into static html documents",
   "main": "index.js",
+  "engines": {
+    "node": ">=4.0",
+    "npm": ">=2.0"
+  },
+  "keywords": [
+    "gulp",
+    "jsx",
+    "html",
+    "react",
+    "es6",
+    "es2015"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "contributors": [
+    {
+      "name": "Bill Shackelford",
+      "email": "bshackelford@gmail.com",
+      "url": "https://github.com/bshack"
+    }
+  ],
+  "author": {
+    "name": "Bill Shackelford",
+    "email": "bshackelford@gmail.com",
+    "url": "https://github.com/bshack"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bshack/gulp-compile-jsx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bshack/gulp-compile-jsx/issues"
+  },
   "dependencies": {
     "babel-core": "^6.7.6",
     "babel-plugin-transform-es2015-modules-umd": "^6.6.5",
