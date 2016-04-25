@@ -1,1 +1,1 @@
-# gulp-jsx2html
+# gulp-compile-jsx
