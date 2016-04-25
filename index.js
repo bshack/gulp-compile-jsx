@@ -9,6 +9,7 @@ const replaceExt = require('replace-ext');
 const gutil = require('gulp-util');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
+const _ = require('lodash');
 
 //promises
 const transformTemplate = config => {
@@ -62,14 +63,16 @@ module.exports = opts => {
 
     return through.obj(function(file, enc, callback) {
 
-        // all data to be passed in at build time
+        // add data to be passed in at build time
         let data = opts.data || {};
+
+        //add in gulp-data module data if present
         if (file.data) {
             data = _.extend(file.data, data);
         }
 
         if (file.isNull()) {
-            cb(null, file);
+            callback(null, file);
             return;
         }
 
