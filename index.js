@@ -62,6 +62,12 @@ module.exports = opts => {
 
     return through.obj(function(file, enc, callback) {
 
+        // all data to be passed in at build time
+        let data = opts.data || {};
+        if (file.data) {
+            data = _.extend(file.data, data);
+        }
+
         if (file.isNull()) {
             cb(null, file);
             return;
@@ -72,9 +78,7 @@ module.exports = opts => {
             transformTemplate({
                     fileContents: file.contents.toString(),
                     filePath: file.path,
-                    data: {
-                        name: 'Bill'
-                    }
+                    data: data
                 })
                 .then(writeTemporaryTemplate)
                 .then(generateMarkup)
