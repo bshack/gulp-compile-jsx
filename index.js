@@ -13,7 +13,7 @@ const _ = require('lodash');
 
 //promises
 const transformTemplate = config => {
-    return new Promise(function(fulfill, reject) {
+    return new Promise((fulfill, reject) => {
         config.template = babel.transform(config.fileContents, {
             'presets': ['es2015', 'react'],
             'plugins': ['transform-es2015-modules-umd']
@@ -25,8 +25,8 @@ const transformTemplate = config => {
 const writeTemporaryTemplate = config => {
     // use eval or vm to avoid this step?
     config.tempFilePath = __dirname + '/.tmp/' + config.filePath.split('/').pop();
-    return new Promise(function(fulfill, reject) {
-        fs.writeFile(config.tempFilePath, config.template, function(err) {
+    return new Promise((fulfill, reject) => {
+        fs.writeFile(config.tempFilePath, config.template, err => {
             if (err) {
                 reject(err);
             } else {
@@ -37,13 +37,18 @@ const writeTemporaryTemplate = config => {
 };
 
 const generateMarkup = config => {
-    return new Promise(function(fulfill, reject) {
+    return new Promise((fulfill, reject) => {
         let template = React.createElement(require(config.tempFilePath), config.data);
         fs.unlink(config.tempFilePath, (err) => {
             if (err) {
                 reject(err);
             } else {
-                fulfill(ReactDOMServer.renderToStaticMarkup(template));
+                //if no doctype is provide just prepend an empty string
+                if (!config.data.doctype) {
+                    config.data.doctype = '';
+                }
+                //create html file
+                fulfill(config.data.doctype + ReactDOMServer.renderToStaticMarkup(template));
             }
         });
     });
@@ -63,12 +68,13 @@ module.exports = opts => {
 
     return through.obj(function(file, enc, callback) {
 
-        // add data to be passed in at build time
-        let data = opts.data || {};
+        opts = _.extend({
+            doctype: '<!DOCTYPE html>'
+        }, opts);
 
         //add in gulp-data module data if present
         if (file.data) {
-            data = _.extend(file.data, data);
+            opts = _.extend(file.data, opts);
         }
 
         if (file.isNull()) {
@@ -81,12 +87,12 @@ module.exports = opts => {
             transformTemplate({
                     fileContents: file.contents.toString(),
                     filePath: file.path,
-                    data: data
+                    data: opts
                 })
                 .then(writeTemporaryTemplate)
                 .then(generateMarkup)
                 .then(markup => {
-                    file.contents = new Buffer('<!DOCTYPE html>' + markup);
+                    file.contents = new Buffer(markup);
                     file.path = replaceExtension(file.path);
                     this.push(file);
                     callback();
