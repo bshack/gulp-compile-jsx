@@ -86,7 +86,7 @@ module.exports = opts => {
                 .then(writeTemporaryTemplate)
                 .then(generateMarkup)
                 .then(markup => {
-                    file.contents = '<!DOCTYPE html>' + new Buffer(markup);
+                    file.contents = new Buffer('<!DOCTYPE html>' + markup);
                     file.path = replaceExtension(file.path);
                     this.push(file);
                     callback();
